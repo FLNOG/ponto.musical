@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -40,7 +41,15 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    private String codifica(String senha) throws Exception {
+    public List<Usuario> findAll() {
+        return usuarioRepository.findAll();
+    }
+
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
+    public String codifica(String senha) throws Exception {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(senha.getBytes(StandardCharsets.UTF_8));
         StringBuilder hexString = new StringBuilder();

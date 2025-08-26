@@ -19,8 +19,8 @@ public class Usuario {
     @Column(nullable = false, length = 100)
     private String senha;
 
-    @Transient
-    private String confirmarSenha;
+    @Column(nullable = false, length = 11)
+    private String cpf;
 
     @Column(nullable = false)
     private boolean ativo;
@@ -32,8 +32,11 @@ public class Usuario {
     public enum Perfil {
         CLIENTE,
         ESTOQUISTA,
-        FUNCIONARIO
+        ADMINISTRADOR
     }
+
+    @Transient
+    private String confirmarSenha;
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -44,6 +47,8 @@ public class Usuario {
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
     public String getConfirmarSenha() { return confirmarSenha; }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
     public void setConfirmarSenha(String confirmarSenha) { this.confirmarSenha = confirmarSenha; }
     public Perfil getPerfil() { return perfil; }
     public void setPerfil(Perfil perfil) { this.perfil = perfil; }
