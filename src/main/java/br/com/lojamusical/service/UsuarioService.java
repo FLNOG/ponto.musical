@@ -15,6 +15,18 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    public Usuario findById(int id) throws Exception {
+        return usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+    }
+
+    public List<Usuario> findAll() {
+        return usuarioRepository.findAll();
+    }
+
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
     public Usuario cadastro(Usuario usuario) throws Exception {
         if(usuarioRepository.findByEmail(usuario.getEmail())!=null){
             throw new RuntimeException("Email já cadastrado!");
@@ -41,12 +53,34 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
-    }
+    public Usuario editar(int id, Usuario usuarioAtualizado) throws Exception {
+        Usuario usuarioExistente = findById(id);
 
-    public Usuario buscarPorEmail(String email) {
-        return usuarioRepository.findByEmail(email);
+        Usuario usuarioComEmail = usuarioRepository.findByEmail(usuarioAtualizado.getEmail());
+        if (usuarioComEmail != null && usuarioComEmail.getId() != id) {
+            throw new RuntimeException("Email já está sendo usado por outro usuário!");
+        }
+
+        if (!validarCPF(usuarioAtualizado.getCpf())) {
+            throw new RuntimeException("CPF inválido!");
+        }
+
+        Usuario usuarioComCpf = usuarioRepository.findByCpf(usuarioAtualizado.getCpf().replaceAll("[^0-9]", ""));
+        if (usuarioComCpf != null && usuarioComCpf.getId() != id) {
+            throw new RuntimeException("CPF já está sendo usado por outro usuário!");
+        }
+
+        usuarioExistente.setNome(usuarioAtualizado.getNome());
+        usuarioExistente.setEmail(usuarioAtualizado.getEmail());
+        usuarioExistente.setCpf(usuarioAtualizado.getCpf().replaceAll("[^0-9]", ""));
+        usuarioExistente.setPerfil(usuarioAtualizado.getPerfil());
+        usuarioExistente.setAtivo(usuarioAtualizado.isAtivo());
+
+        if (usuarioAtualizado.getSenha() != null && !usuarioAtualizado.getSenha().trim().isEmpty()) {
+            usuarioExistente.setSenha(codifica(usuarioAtualizado.getSenha()));
+        }
+
+        return usuarioRepository.save(usuarioExistente);
     }
 
     public String codifica(String senha) throws Exception {

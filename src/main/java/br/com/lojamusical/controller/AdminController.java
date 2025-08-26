@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AdminController {
@@ -47,6 +47,31 @@ public class AdminController {
             model.addAttribute("erro", e.getMessage());
             model.addAttribute("usuario", usuario); // Manter dados preenchidos
             return "/admin/cadastro_usuario";
+        }
+    }
+
+    @GetMapping("/admin/usuario/editar/{id}")
+    public String exibirEdicao(@PathVariable int id, Model model) {
+        try {
+            Usuario usuario = usuarioService.findById(id);
+            model.addAttribute("usuario", usuario);
+            return "/admin/editar_usuario";
+        } catch (Exception e) {
+            model.addAttribute("erro", "Usuário não encontrado!");
+            return "redirect:/usuarios";
+        }
+    }
+
+    @PostMapping("/admin/usuario/editar/{id}")
+    public String editarUsuario(@PathVariable int id, @ModelAttribute Usuario usuario, Model model) {
+        try {
+            usuarioService.editar(id, usuario);
+            model.addAttribute("sucesso", "Usuário editado com sucesso!");
+            return "redirect:/usuarios";
+        } catch (Exception e) {
+            model.addAttribute("erro", e.getMessage());
+            model.addAttribute("usuario", usuario);
+            return "/admin/editar_usuario";
         }
     }
 }
