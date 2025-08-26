@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Usuário</title>
+</head>
+<body>
+<h1>Cadastro de Usuário via ADM</h1>
+
+<p th:if="${erro}" th:text="${erro}" style="color:red"></p>
+
+<p th:if="${sucesso}" th:text="${sucesso}" style="color:green"></p>
+
+<form th:action="@{/cadastro_adm}" method="post" th:object="${usuario}">
+    <label>Nome:</label>
+    <input type="text" th:field="*{nome}" name="nome" required><br><br>
+
+    <label>Email:</label>
+    <input type="email" th:field="*{email}" name="email" required><br><br>
+
+    <label>CPF:</label>
+    <input type="text" th:field="*{cpf}" name="cpf" maxlength="11" required><br><br>
+
+    <label>Senha:</label>
+    <input type="password" th:field="*{senha}" name="senha" required><br><br>
+
+    <label>Perfil:</label>
+    <select th:field="*{perfil}" name="perfil" required>
+        <option value="">Selecione um perfil</option>
+        <option th:value="CLIENTE">Cliente</option>
+        <option th:value="ESTOQUISTA">Estoquista</option>
+        <option th:value="ADMINISTRADOR">Administrador</option>
+    </select><br><br>
+
+    <button type="submit">Cadastrar</button>
+</form>
+</body>
+</html>
